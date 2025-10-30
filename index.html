@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multistep Form</title>
+    <link rel="stylesheet" href="style.css" />
+    
+    <script src="script.js" defer></script>
+    <!-- social links for refinedguides.com -->
+    
+  </head>
+  <body>
+    <form class="form-wizard">
+      <!-- .completed -->
+      <div class="completed" hidden>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+          />
+        </svg>
+
+        <h3>Thank you</h3>
+        <p>Feedback has been submitted</p>
+      </div>
+      <!-- /.completed -->
+
+      <h1>Registration</h1>
+
+      <!-- .progress-container -->
+      <div class="progress-container">
+        <div class="progress"></div>
+
+        <ol>
+          <li class="current">Personal</li>
+          <li>Contact</li>
+          <li>Account</li>
+          <li>About</li>
+        </ol>
+      </div>
+      <!-- /.progress-container -->
+
+      <!-- .steps-container -->
+      <div class="steps-container">
+        <div class="step">
+          <h3>Personal Information</h3>
+
+          <div class="form-control">
+            <label for="first-name">Name</label>
+            <input type="text" id="first-name" name="first-name" required />
+          </div>
+          <div class="form-control">
+            <label for="last-name">Firm name</label>
+            <input type="text" id="last-name" name="last-name" required />
+          </div>
+          <div class="form-control">
+            <label for="first-name">Address</label>
+            <input type="text" id="first-name" name="first-name" required />
+          </div>
+          <div class="form-control">
+            <label for="first-name">Contact Number</label>
+            <input type="text" id="first-name" name="first-name" required />
+          </div>
+       
+        </div>
+        <div class="step">
+          <h3>Training Details</h3>
+          
+          <div class="form-control">
+            <label for="email">Trainer name</label>
+            <input type="text" id="email" name="email" required />
+          </div>
+
+          <div class="form-control">
+            <label for="phone">Date</label>
+            <input type="tel" id="phone" name="phone" required />
+          </div>
+
+          <div class="form-control">
+            <label for="phone">Duration</label>
+            <input type="tel" id="phone" name="phone" required />
+          </div>
+
+          <h5>1. Basic Billing and Master</h5>
+
+          <div class="form-control">
+            <label for="phone">Remarks</label>
+            <input type="tel" id="phone" name="phone" required />
+          </div>
+
+          <h5>2. Purchase & Sales Entry</h5>
+
+
+          <div class="form-control">
+            <label for="phone">Remarks</label>
+            <input type="tel" id="phone" name="phone" required />
+          </div>
+
+          <h5>3. Inventory Management</h5>
+
+
+          <div class="form-control">
+            <label for="phone">Remarks</label>
+            <input type="tel" id="phone" name="phone" required />
+          </div>
+
+          <h5>4. GST Reports & Returns</h5>
+
+          <div class="form-control">
+            <label for="phone">Remarks</label>
+            <input type="tel" id="phone" name="phone" required />
+          </div>
+
+          <h5>5. Backup & Restore</h5>
+
+
+          <div class="form-control">
+            <label for="phone">Remarks</label>
+            <input type="tel" id="phone" name="phone" required />
+          </div>
+
+          <h5>6. others (specify)</h5>
+
+          <div class="form-control">
+            <label for="phone">Training specify</label>
+            <input type="tel" id="phone" name="phone" required />
+          </div>
+
+
+          <div class="form-control">
+            <label for="phone">Remarks</label>
+            <input type="tel" id="phone" name="phone" required />
+          </div>     
+
+
+        </div>
+        <div class="step">
+          <h3>Account Information</h3>
+
+          <h5>Was the training helpful</h5>
+<div class="checkbox-group">
+    <input type="checkbox" id="option1" name="option" value="1">
+    <label for="option1" class="checkbox-label">Excellent</label>
+
+    <input type="checkbox" id="option2" name="option" value="2">
+    <label for="option2" class="checkbox-label">Good</label>
+
+    <input type="checkbox" id="option3" name="option" value="3">
+    <label for="option3" class="checkbox-label">Poor</label>
+
+</div>
+
+
+<h5>Trainer's Knowledge and Support</h5>
+<div class="checkbox-group">
+    <input type="checkbox" id="option1" name="option" value="1">
+    <label for="option1" class="checkbox-label">Excellent</label>
+
+    <input type="checkbox" id="option2" name="option" value="2">
+    <label for="option2" class="checkbox-label">Good</label>
+
+    <input type="checkbox" id="option3" name="option" value="3">
+    <label for="option3" class="checkbox-label">Poor</label>
+
+</div>
+
+<h5>Any additional comments or suggestions</h5>
+<div class="form-control">
+  <label for="bio">suggestions</label>
+  <textarea name="bio" id="bio" rows="4" required></textarea>
+</div>
+
+   
+        </div>
+        <div class="step">
+          <h2 class="signature-heading" style="text-align: left;">Handwritten Signature</h2>
+<canvas id="signature-pad" width="300" height="150"></canvas>
+
+<div class="buttons">
+    <button id="clear">Clear</button>
+    <button id="download">Download</button>
+</div>
+        </div>
+      </div>
+      <!-- /.steps-container -->
+
+      <!-- .controls -->
+      <div class="controls">
+        <button type="button" class="prev-btn">Prev</button>
+        <button type="button" class="next-btn">Next</button>
+        <button type="submit" class="submit-btn">Submit</button>
+      </div>
+      <!-- /.controls -->
+    </form>
+  </body>
+</html>
