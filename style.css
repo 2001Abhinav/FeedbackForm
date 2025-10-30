@@ -17,6 +17,7 @@
 }
 
 body {
+  overflow-y: auto;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -200,7 +201,7 @@ html[dir="rtl"] .progress-container .progress {
 
 .steps-container {
   display: flex;
-  overflow: hidden;
+  overflow-y: auto;
 }
 
 .step {
