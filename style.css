@@ -211,22 +211,12 @@ html[dir="rtl"] .progress-container .progress {
   height: fit-content;
   display: grid;
   gap: 8px;
-  flex: 1 0 100%;
-  padding: 24px 8px;
-  transition: opacity 0.3s;
-  height: fit-content;
-  display: grid;
-  gap: 8px;
-  opacity: 0;
-  pointer-events: none; /* Prevent clicks */
-  position: absolute;   /* Remove from layout flow */
-  width: 100%;
+  pointer-events: none;
 }
 
 .step.current {
   opacity: 1;
   pointer-events: auto;
-  position: relative;
 }
 
 .controls {
