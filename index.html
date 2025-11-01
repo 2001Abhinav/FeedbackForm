@@ -5,40 +5,352 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Multistep Form</title>
     <link rel="stylesheet" href="style.css" />
-    
-    <script src="script.js" defer></script>
-    <!-- social links for refinedguides.com -->
-    
+    <script defer>
+      document.addEventListener("DOMContentLoaded", () => {
+        const form = document.querySelector(".form-wizard");
+        const progress = form.querySelector(".progress");
+        const stepsContainer = form.querySelector(".steps-container");
+        const steps = form.querySelectorAll(".step");
+        const stepIndicators = form.querySelectorAll(".progress-container li");
+        const prevButton = form.querySelector(".prev-btn");
+        const nextButton = form.querySelector(".next-btn");
+        const submitButton = form.querySelector(".submit-btn");
+
+        document.documentElement.style.setProperty("--steps", stepIndicators.length);
+
+        let currentStep = 0;
+
+        const updateProgress = () => {
+          let width = currentStep / (steps.length - 1);
+          progress.style.transform = `scaleX(${width})`;
+          stepsContainer.style.height = steps[currentStep].offsetHeight + "px";
+
+          stepIndicators.forEach((indicator, index) => {
+            indicator.classList.toggle("current", currentStep === index);
+            indicator.classList.toggle("done", currentStep > index);
+          });
+
+          steps.forEach((step, index) => {
+            const percentage = document.documentElement.dir === "rtl" ? 100 : -100;
+            step.style.transform = `translateX(${currentStep * percentage}%)`;
+            step.classList.toggle("current", currentStep === index);
+          });
+
+          updateButtons();
+        };
+
+        const updateButtons = () => {
+          prevButton.hidden = currentStep === 0;
+          nextButton.hidden = currentStep >= steps.length - 1;
+          submitButton.hidden = !nextButton.hidden;
+        };
+
+        const isValidStep = () => {
+          const fields = steps[currentStep].querySelectorAll("input, textarea, select");
+          return [...fields].every((field) => field.reportValidity());
+        };
+
+        const inputs = form.querySelectorAll("input, textarea, select");
+        inputs.forEach((input) =>
+          input.addEventListener("focus", (e) => {
+            const focusedElement = e.target;
+            const focusedStep = [...steps].findIndex((step) =>
+              step.contains(focusedElement)
+            );
+            if (focusedStep !== -1 && focusedStep !== currentStep) {
+              if (!isValidStep()) return;
+              currentStep = focusedStep;
+              updateProgress();
+            }
+            stepsContainer.scrollTop = 0;
+            stepsContainer.scrollLeft = 0;
+          })
+        );
+
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          if (!form.checkValidity()) return;
+
+          const formData = new FormData(form);
+          console.log(Object.fromEntries(formData));
+
+          submitButton.disabled = true;
+          submitButton.textContent = "Submitting...";
+
+          setTimeout(() => {
+            form.querySelector(".completed").hidden = false;
+          }, 3000);
+        });
+
+        prevButton.addEventListener("click", (e) => {
+          e.preventDefault();
+          if (currentStep > 0) {
+            currentStep--;
+            updateProgress();
+          }
+        });
+
+        nextButton.addEventListener("click", (e) => {
+          e.preventDefault();
+          if (!isValidStep()) return;
+          if (currentStep < steps.length - 1) {
+            currentStep++;
+            updateProgress();
+          }
+        });
+
+        updateProgress();
+
+        // Signature pad setup
+        const canvas = document.getElementById("signature");
+        if (canvas) {
+          const ctx = canvas.getContext("2d");
+          let drawing = false;
+
+          const startDrawing = (e) => {
+            drawing = true;
+            ctx.beginPath();
+            ctx.moveTo(e.offsetX, e.offsetY);
+          };
+
+          const draw = (e) => {
+            if (!drawing) return;
+            ctx.lineWidth = 2;
+            ctx.lineCap = "round";
+            ctx.strokeStyle = "#000";
+            ctx.lineTo(e.offsetX, e.offsetY);
+            ctx.stroke();
+          };
+
+          const stopDrawing = () => {
+            drawing = false;
+            ctx.closePath();
+          };
+
+          canvas.addEventListener("mousedown", startDrawing);
+          canvas.addEventListener("mousemove", draw);
+          canvas.addEventListener("mouseup", stopDrawing);
+          canvas.addEventListener("mouseout", stopDrawing);
+
+          document
+            .getElementById("clear-signature")
+            .addEventListener("click", () =>
+              ctx.clearRect(0, 0, canvas.width, canvas.height)
+            );
+        }
+      });
+    </script>
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap");
+
+      * {
+        font-family: "Outfit", sans-serif;
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --main-color: #c41e67;
+        --dark-color: #a71555;
+        --step-color: #ced7e0;
+        --step-size: 32px;
+        --steps: 4;
+        --progress-width: calc((var(--steps) - 1) / var(--steps) * 100%);
+      }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: lavender;
+        color: #333;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 16px;
+      }
+
+      h3 {
+        margin-bottom: 16px;
+        text-transform: uppercase;
+        font-size: clamp(1rem, 2vw + 1rem, 1.25rem);
+      }
+
+      label {
+        display: inline-block;
+        margin-bottom: 4px;
+      }
+
+      input,
+      textarea,
+      select {
+        outline-color: var(--main-color);
+        border: 1px solid lightgray;
+        padding: 8px 16px;
+        border-radius: 4px;
+        width: 100%;
+        font-size: 1rem;
+        text-align: start;
+      }
+
+      textarea {
+        resize: none;
+      }
+
+      button {
+        cursor: pointer;
+        border: none;
+        border-radius: 16px;
+        padding: 8px 16px;
+        background-color: var(--main-color);
+        color: #fff;
+        font-size: 0.875rem;
+        transition: 0.3s;
+      }
+
+      button:active,
+      button:hover {
+        background-color: var(--dark-color);
+      }
+
+      button:disabled {
+        opacity: 0.8;
+      }
+
+      form {
+        margin-block: auto;
+      }
+
+      .form-wizard {
+        background-color: #fff;
+        padding: 1.5rem;
+        border-radius: 8px;
+        width: min(500px, 90%);
+        box-shadow: 0 4px 16px rgba(167, 21, 84, 0.1);
+      }
+
+      .progress-container {
+        position: relative;
+      }
+
+      .progress-container::before {
+        content: "";
+        height: 4px;
+        width: var(--progress-width);
+        background-color: var(--step-color);
+        position: absolute;
+        top: calc(var(--step-size) / 2);
+        left: 50%;
+        translate: -50% -50%;
+      }
+
+      .progress-container .progress {
+        height: 4px;
+        width: var(--progress-width);
+        background-color: var(--main-color);
+        position: absolute;
+        top: calc(var(--step-size) / 2);
+        left: 50%;
+        translate: -50% -50%;
+        z-index: 2;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: 0.3s;
+      }
+
+      .progress-container ol {
+        list-style-type: none;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        counter-reset: step-number;
+        position: relative;
+        z-index: 3;
+      }
+
+      .progress-container li {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: var(--step-color);
+        transition: 0.3s linear 0.3s;
+        text-align: center;
+        font-size: 0;
+      }
+
+      @media (min-width: 480px) {
+        .progress-container li {
+          font-size: 1rem;
+          gap: 8px;
+        }
+      }
+
+      .progress-container li.done::before,
+      .progress-container li.current::before {
+        background-color: var(--main-color);
+      }
+
+      .steps-container {
+        display: flex;
+        overflow: hidden;
+        transition: height 0.3s ease;
+      }
+
+      .step {
+        flex: 1 0 100%;
+        padding: 24px 8px;
+        opacity: 0;
+        transition: opacity 0.3s;
+        display: grid;
+        gap: 8px;
+      }
+
+      .step.current {
+        opacity: 1;
+      }
+
+      .controls {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-top: 16px;
+      }
+
+      .completed {
+        text-align: center;
+      }
+
+      .completed svg {
+        width: 100px;
+        height: 100px;
+        stroke: yellowgreen;
+      }
+
+      .step canvas {
+        display: block;
+      }
+    </style>
   </head>
   <body>
     <form class="form-wizard">
-      <!-- .completed -->
       <div class="completed" hidden>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-          />
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
         </svg>
-
-        <h3>Thank you</h3>
-        <p>Feedback has been submitted</p>
+        <h3>Registration Successful!</h3>
+        <p>Your account has been created.</p>
       </div>
-      <!-- /.completed -->
 
       <h1>Registration</h1>
 
-      <!-- .progress-container -->
       <div class="progress-container">
         <div class="progress"></div>
-
         <ol>
           <li class="current">Personal</li>
           <li>Contact</li>
@@ -46,159 +358,85 @@
           <li>About</li>
         </ol>
       </div>
-      <!-- /.progress-container -->
 
-      <!-- .steps-container -->
       <div class="steps-container">
-        <div class="step">
+        <div class="step current">
           <h3>Personal Information</h3>
-
           <div class="form-control">
-            <label for="first-name">Name</label>
+            <label for="first-name">First Name</label>
             <input type="text" id="first-name" name="first-name" required />
           </div>
           <div class="form-control">
-            <label for="last-name">Firm name</label>
+            <label for="last-name">Last Name</label>
             <input type="text" id="last-name" name="last-name" required />
           </div>
-          <div class="form-control">
-            <label for="first-name">Address</label>
-            <input type="text" id="first-name" name="first-name" required />
-          </div>
-          <div class="form-control">
-            <label for="first-name">Contact Number</label>
-            <input type="text" id="first-name" name="first-name" required />
-          </div>
-       
         </div>
+
         <div class="step">
-          <h3>Training Details</h3>
-          
+          <h3>Contact Information</h3>
           <div class="form-control">
-            <label for="email">Trainer name</label>
-            <input type="text" id="email" name="email" required />
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required />
           </div>
-
           <div class="form-control">
-            <label for="phone">Date</label>
+            <label for="phone">Phone</label>
             <input type="tel" id="phone" name="phone" required />
           </div>
-
-          <div class="form-control">
-            <label for="phone">Duration</label>
-            <input type="tel" id="phone" name="phone" required />
-          </div>
-
-          <h5>1. Basic Billing and Master</h5>
-
-          <div class="form-control">
-            <label for="phone">Remarks</label>
-            <input type="tel" id="phone" name="phone" required />
-          </div>
-
-          <h5>2. Purchase & Sales Entry</h5>
-
-
-          <div class="form-control">
-            <label for="phone">Remarks</label>
-            <input type="tel" id="phone" name="phone" required />
-          </div>
-
-          <h5>3. Inventory Management</h5>
-
-
-          <div class="form-control">
-            <label for="phone">Remarks</label>
-            <input type="tel" id="phone" name="phone" required />
-          </div>
-
-          <h5>4. GST Reports & Returns</h5>
-
-          <div class="form-control">
-            <label for="phone">Remarks</label>
-            <input type="tel" id="phone" name="phone" required />
-          </div>
-
-          <h5>5. Backup & Restore</h5>
-
-
-          <div class="form-control">
-            <label for="phone">Remarks</label>
-            <input type="tel" id="phone" name="phone" required />
-          </div>
-
-          <h5>6. others (specify)</h5>
-
-          <div class="form-control">
-            <label for="phone">Training specify</label>
-            <input type="tel" id="phone" name="phone" required />
-          </div>
-
-
-          <div class="form-control">
-            <label for="phone">Remarks</label>
-            <input type="tel" id="phone" name="phone" required />
-          </div>     
-
-
         </div>
+
         <div class="step">
           <h3>Account Information</h3>
+          <div class="form-control">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required />
+          </div>
+          <div class="form-control">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required />
+          </div>
+          <div class="form-control">
+            <label for="confirm-password">Confirm Password</label>
+            <input type="password" id="confirm-password" name="confirm-password" required />
+          </div>
 
-          <h5>Was the training helpful</h5>
-<div class="checkbox-group">
-    <input type="checkbox" id="option1" name="option" value="1">
-    <label for="option1" class="checkbox-label">Excellent</label>
+          <div class="form-control">
+            <label>Was the training helpful?</label>
+            <select name="training-feedback" required>
+              <option value="">Select</option>
+              <option value="excellent">Excellent</option>
+              <option value="good">Good</option>
+              <option value="average">Average</option>
+              <option value="poor">Poor</option>
+            </select>
+          </div>
 
-    <input type="checkbox" id="option2" name="option" value="2">
-    <label for="option2" class="checkbox-label">Good</label>
-
-    <input type="checkbox" id="option3" name="option" value="3">
-    <label for="option3" class="checkbox-label">Poor</label>
-
-</div>
-
-
-<h5>Trainer's Knowledge and Support</h5>
-<div class="checkbox-group">
-    <input type="checkbox" id="option1" name="option" value="1">
-    <label for="option1" class="checkbox-label">Excellent</label>
-
-    <input type="checkbox" id="option2" name="option" value="2">
-    <label for="option2" class="checkbox-label">Good</label>
-
-    <input type="checkbox" id="option3" name="option" value="3">
-    <label for="option3" class="checkbox-label">Poor</label>
-
-</div>
-
-<h5>Any additional comments or suggestions</h5>
-<div class="form-control">
-  <label for="bio">suggestions</label>
-  <textarea name="bio" id="bio" rows="4" required></textarea>
-</div>
-
-   
+          <div class="form-control">
+            <label>Trainer's knowledge and support</label>
+            <select name="trainer-feedback" required>
+              <option value="">Select</option>
+              <option value="excellent">Excellent</option>
+              <option value="good">Good</option>
+              <option value="average">Average</option>
+              <option value="poor">Poor</option>
+            </select>
+          </div>
         </div>
-        <div class="step">
-          <h2 class="signature-heading" style="text-align: left;">Handwritten Signature</h2>
-<canvas id="signature-pad" width="300" height="150"></canvas>
 
-<div class="buttons">
-    <button id="clear">Clear</button>
-    <button id="download">Download</button>
-</div>
+        <div class="step">
+          <h3>Signature</h3>
+          <div class="form-control">
+            <label for="signature">Please draw your signature below</label>
+            <canvas id="signature" width="400" height="150" style="border:1px solid #ccc; border-radius:4px; width:100%; background-color:#fff;"></canvas>
+            <button type="button" id="clear-signature" style="margin-top:8px;">Clear</button>
+          </div>
         </div>
       </div>
-      <!-- /.steps-container -->
 
-      <!-- .controls -->
       <div class="controls">
         <button type="button" class="prev-btn">Prev</button>
         <button type="button" class="next-btn">Next</button>
         <button type="submit" class="submit-btn">Submit</button>
       </div>
-      <!-- /.controls -->
     </form>
   </body>
 </html>

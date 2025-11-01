@@ -106,16 +106,3 @@ nextButton.addEventListener("click", (e) => {
 });
 
 updateProgress();
-
-/*checkbox*/
-
-const checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]');
-    checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            if (this.checked) {
-                checkboxes.forEach(cb => {
-                    if (cb !== this) cb.checked = false;
-                });
-            }
-        });
-    });
