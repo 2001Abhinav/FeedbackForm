@@ -363,41 +363,38 @@
         <div class="step current">
           <h3>Personal Information</h3>
           <div class="form-control">
-            <label for="first-name">First Name</label>
+            <label for="first-name">Name</label>
             <input type="text" id="first-name" name="first-name" required />
           </div>
           <div class="form-control">
-            <label for="last-name">Last Name</label>
+            <label for="last-name">Firm Name</label>
             <input type="text" id="last-name" name="last-name" required />
           </div>
-        </div>
-
-        <div class="step">
-          <h3>Contact Information</h3>
           <div class="form-control">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required />
+            <label for="Address">Address</label>
+            <input type="text" id="Address" name="Address" required />
           </div>
           <div class="form-control">
-            <label for="phone">Phone</label>
-            <input type="tel" id="phone" name="phone" required />
+            <label for="contact-number">Contact Number</label>
+            <input type="number" id="contact-number" name="contact-number" required />
           </div>
         </div>
 
         <div class="step">
-          <h3>Account Information</h3>
+          <h3>Training Details</h3>
           <div class="form-control">
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username" required />
+            <label for="trainer-name">Trainer Name</label>
+            <input type="text" id="trainer-name" name="trainer-name" required />
           </div>
           <div class="form-control">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" required />
+            <label for="date">Date</label>
+            <input type="text" id="date" name="date" required />
           </div>
-          <div class="form-control">
-            <label for="confirm-password">Confirm Password</label>
-            <input type="password" id="confirm-password" name="confirm-password" required />
-          </div>
+        </div>
+
+        <div class="step">
+          <h3>Customer Feedback</h3>
+          
 
           <div class="form-control">
             <label>Was the training helpful?</label>
@@ -423,7 +420,8 @@
         </div>
 
         <div class="step">
-          <h3>Signature</h3>
+          <h3>Declaration</h3>
+          <h5>I hereby confirm that i have attended and understood the Marg Software training as mentioned above</h5>
           <div class="form-control">
             <label for="signature">Please draw your signature below</label>
             <canvas id="signature" width="400" height="150" style="border:1px solid #ccc; border-radius:4px; width:100%; background-color:#fff;"></canvas>
